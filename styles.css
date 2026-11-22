@@ -1,7 +1,7 @@
 
 body {
-    background-color: black;
-    color: white;
+    background-color: rgb(70, 86, 106);
+    color: rgb(241, 245, 249);
 }
 
 h1 {
@@ -49,12 +49,12 @@ nav a:hover {
 /* TARJETAS DE NOTICIAS */
 
 .tarjeta {
-    background-color: #1c1c1c;
+    background-color: rgb(89, 107, 128);
     width: calc(100% - 40px);
     max-width: none;
     margin: 30px auto;
     padding: 20px;
-    border: 1px solid #444;
+    border: 1px solid #ffffff;
     border-radius: 10px;
     box-sizing: border-box;
     text-align: center;
@@ -83,8 +83,8 @@ nav a:hover {
 
 .boton {
     display: inline-block;
-    background-color: lightgreen;
-    color: black;
+    background-color: rgb(138, 199, 255);
+    color: rgb(48, 66, 87);
     padding: 10px 20px;
     border: none;
     font-size: 16px;
