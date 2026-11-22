@@ -5,11 +5,11 @@ body {
 }
 
 h1 {
-    color: lightgreen;
+    color: rgb(138, 199, 255);
 }
 
 h2 {
-    color: lightgray;
+    color: white;
 }
 
 p {
@@ -17,7 +17,7 @@ p {
 }
 
 a {
-    color: lightblue;
+    color: rgb(138, 199, 255);
 }
 
 img {
@@ -43,7 +43,7 @@ nav a {
 }
 
 nav a:hover {
-    color: lightgreen;
+    color: white;
 }
 
 /* TARJETAS DE NOTICIAS */
@@ -51,10 +51,9 @@ nav a:hover {
 .tarjeta {
     background-color: rgb(89, 107, 128);
     width: calc(100% - 40px);
-    max-width: none;
     margin: 30px auto;
     padding: 20px;
-    border: 1px solid #ffffff;
+    border: 1px solid rgb(48, 66, 87);
     border-radius: 10px;
     box-sizing: border-box;
     text-align: center;
@@ -79,7 +78,7 @@ nav a:hover {
     text-align: left;
 }
 
-
+/* BOTON LEER MAS */
 
 .boton {
     display: inline-block;
@@ -88,11 +87,65 @@ nav a:hover {
     padding: 10px 20px;
     border: none;
     font-size: 16px;
-    text-decoration: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .boton:hover {
     background-color: white;
+}
+
+/* ETIQUETAS DE LAS NOTICIAS */
+
+.etiquetas {
+    max-width: 800px;
+    margin: 25px auto 0;
+    padding-top: 15px;
+    border-top: 1px solid rgb(138, 199, 255);
+    text-align: left;
+}
+
+.etiqueta {
+    background-color: rgb(48, 66, 87);
+    color: white;
+    border: 1px solid rgb(138, 199, 255);
+    border-radius: 15px;
+    padding: 6px 12px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.etiqueta:hover {
+    background-color: rgb(138, 199, 255);
+    color: rgb(48, 66, 87);
+}
+
+/* FILTROS DE NOTICIAS */
+
+.estado-filtro {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.quitar-filtro {
+    background-color: rgb(138, 199, 255);
+    color: rgb(48, 66, 87);
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+.quitar-filtro:hover {
+    background-color: white;
+}
+
+/* ELEMENTOS OCULTOS */
+
+.tarjeta[hidden],
+.contenido-extra[hidden],
+.estado-filtro[hidden],
+.quitar-filtro[hidden] {
+    display: none;
 }

@@ -1,13 +1,15 @@
 
-<html>
+<!DOCTYPE html>
+<html lang="es">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
-        <title>Archivo Oculto - Enigmas del pasado</title>
+        <title>Archivos Ocultos - Enigmas del pasado</title>
     </head>
 
     <body>
-        <h1>Archivo Oculto</h1>
+        <h1>Archivos Ocultos</h1>
         <h2>Misterios y conspiraciones</h2>
 
         <nav>
@@ -31,6 +33,12 @@
 
         <hr>
 
+        <p id="avisoFiltro" class="estado-filtro" hidden></p>
+
+        <button id="limpiarFiltro" class="quitar-filtro" type="button" hidden>
+            Mostrar todas
+        </button>
+
         <article class="tarjeta">
 
             <h3>Stonehenge: el misterio de las piedras gigantes</h3>
@@ -44,7 +52,7 @@
                 preguntas sobre su construcción y finalidad...
             </p>
 
-            <div id="contenido-extra" hidden>
+            <div class="contenido-extra" hidden>
 
                 <p>
                     La construcción de Stonehenge comenzó
@@ -93,9 +101,17 @@
 
             </div>
 
-            <button class="boton" id="botonLeer" type="button">
+            <button class="boton" type="button">
                 Leer más
             </button>
+
+            <div class="etiquetas">
+                <strong>Etiquetas:</strong>
+
+                <button class="etiqueta" data-etiqueta="enigmas" type="button">Enigmas del pasado</button>
+                <button class="etiqueta" data-etiqueta="stonehenge" type="button">Stonehenge</button>
+                <button class="etiqueta" data-etiqueta="arqueologia" type="button">Arqueología</button>
+            </div>
 
         </article>
 

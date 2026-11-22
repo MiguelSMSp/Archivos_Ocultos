@@ -1,13 +1,15 @@
 
-<html>
+<!DOCTYPE html>
+<html lang="es">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
-        <title>Archivo Oculto - OVNIS</title>
+        <title>Archivos Ocultos - OVNIS</title>
     </head>
 
     <body>
-        <h1>Archivo Oculto</h1>
+        <h1>Archivos Ocultos</h1>
         <h2>Misterios y conspiraciones</h2>
 
         <nav>
@@ -31,6 +33,12 @@
 
         <hr>
 
+        <p id="avisoFiltro" class="estado-filtro" hidden></p>
+
+        <button id="limpiarFiltro" class="quitar-filtro" type="button" hidden>
+            Mostrar todas
+        </button>
+
         <article class="tarjeta">
 
             <h3>El misterio del Área 51</h3>
@@ -44,7 +52,7 @@
                 y tecnología extraterrestre...
             </p>
 
-            <div id="contenido-extra" hidden>
+            <div class="contenido-extra" hidden>
 
                 <p>
                     La instalación fue utilizada para desarrollar
@@ -68,9 +76,17 @@
 
             </div>
 
-            <button class="boton" id="botonLeer" type="button">
+            <button class="boton" type="button">
                 Leer más
             </button>
+
+            <div class="etiquetas">
+                <strong>Etiquetas:</strong>
+
+                <button class="etiqueta" data-etiqueta="ovnis" type="button">OVNIS</button>
+                <button class="etiqueta" data-etiqueta="area51" type="button">Área 51</button>
+                <button class="etiqueta" data-etiqueta="bases-militares" type="button">Bases militares</button>
+            </div>
 
         </article>
 
