@@ -1,6 +1,7 @@
+
 body {
-    background-color: black;
-    color: white;
+    background-color: rgb(32, 114, 88);
+    color: rgb(255, 255, 255);
 }
 
 h1 {
@@ -17,4 +18,28 @@ p {
 
 a {
     color: lightblue;
+}
+
+img {
+    width: 300px;
+    height: auto;
+}
+
+/* MENU DE NAVEGACION */
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav a:hover {
+    color: lightgreen;
 }
