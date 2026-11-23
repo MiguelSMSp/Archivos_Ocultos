@@ -4,13 +4,49 @@ body {
     color: rgb(241, 245, 249);
 }
 
+/* CABECERA */
+
+.cabecera {
+    position: relative;
+    z-index: 10;
+    background-color: rgb(48, 66, 87);
+    width: calc(100% - 40px);
+    margin: 20px auto 25px;
+    padding: 20px;
+    border: 1px solid rgb(100, 123, 148);
+    border-radius: 18px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* NOMBRE Y LOGO */
+
+.marca {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+}
+
 h1 {
     color: rgb(138, 199, 255);
+    margin: 0;
+}
+
+.logo-header {
+    width: 80px;
+    height: auto;
 }
 
 h2 {
     color: white;
 }
+
+.cabecera h2 {
+    margin: 20px 0;
+}
+
+/* TEXTOS GENERALES */
 
 p {
     font-size: 18px;
@@ -35,6 +71,7 @@ nav ul {
     gap: 40px;
     list-style: none;
     padding: 0;
+    margin: 15px 0;
 }
 
 nav a {
@@ -44,6 +81,142 @@ nav a {
 
 nav a:hover {
     color: white;
+}
+
+/* REPRODUCTOR DE MUSICA */
+
+.musica {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 290px;
+    background-color: rgb(70, 86, 106);
+    border: 1px solid rgb(138, 199, 255);
+    border-radius: 10px;
+    padding: 12px;
+    box-sizing: border-box;
+    z-index: 20;
+}
+
+/* PRIMERA FILA */
+
+.musica-encabezado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.musica-encabezado span {
+    color: white;
+    font-size: 16px;
+}
+
+/* BOTON PLAY Y PAUSA */
+
+.boton-musica {
+    width: 38px;
+    height: 38px;
+    background-color: rgb(138, 199, 255);
+    color: rgb(48, 66, 87);
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.boton-musica:hover {
+    background-color: white;
+}
+
+.boton-musica:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
+}
+
+/* SEGUNDA FILA: VOLUMEN */
+
+.controles-volumen {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.controles-volumen label {
+    font-size: 14px;
+}
+
+.controles-volumen input {
+    flex: 1;
+    min-width: 0;
+    accent-color: rgb(138, 199, 255);
+    cursor: pointer;
+}
+
+.controles-volumen span {
+    font-size: 13px;
+    min-width: 34px;
+}
+
+/* PRESENTACION DE LAS SECCIONES */
+
+body > h2 {
+    text-align: center;
+}
+
+body > p {
+    text-align: center;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* BANNERS */
+
+.banner-seccion {
+    position: relative;
+    width: calc(100% - 40px);
+    margin: 0 auto 30px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.banner-imagen {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 320px;
+    object-fit: cover;
+}
+
+.banner-texto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.banner-texto h2 {
+    margin-bottom: 15px;
+    font-size: 42px;
+    color: white;
+}
+
+.banner-texto p {
+    max-width: 800px;
+    margin: 0;
+    font-size: 22px;
+    color: white;
+    text-align: center;
 }
 
 /* TARJETAS DE NOTICIAS */
@@ -95,7 +268,7 @@ nav a:hover {
     background-color: white;
 }
 
-/* ETIQUETAS DE LAS NOTICIAS */
+/* ETIQUETAS */
 
 .etiquetas {
     max-width: 800px;
@@ -121,7 +294,7 @@ nav a:hover {
     color: rgb(48, 66, 87);
 }
 
-/* FILTROS DE NOTICIAS */
+/* FILTROS */
 
 .estado-filtro {
     font-size: 16px;
@@ -148,4 +321,45 @@ nav a:hover {
 .estado-filtro[hidden],
 .quitar-filtro[hidden] {
     display: none;
+}
+
+/* ADAPTACION A MOVILES */
+
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .logo-header {
+        width: 55px;
+    }
+
+    .marca {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    nav ul {
+        gap: 15px;
+    }
+
+    .musica {
+        position: static;
+        width: 100%;
+        max-width: 290px;
+        margin: 15px auto 0;
+    }
+
+    .banner-imagen {
+        height: 250px;
+    }
+
+    .banner-texto h2 {
+        font-size: 30px;
+    }
+
+    .banner-texto p {
+        font-size: 18px;
+    }
 }
