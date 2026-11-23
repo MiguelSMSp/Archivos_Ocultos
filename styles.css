@@ -1,52 +1,79 @@
 
+/* Configurar el fondo y el texto */
+
 body {
     background-color: rgb(70, 86, 106);
     color: rgb(241, 245, 249);
 }
 
-/* CABECERA */
+/* Compactar la cabecera */
 
 .cabecera {
     position: relative;
     z-index: 10;
     background-color: rgb(48, 66, 87);
     width: calc(100% - 40px);
-    margin: 20px auto 25px;
-    padding: 20px;
+    margin: 15px auto 25px;
+    padding: 16px 20px 14px;
     border: 1px solid rgb(100, 123, 148);
     border-radius: 18px;
     box-sizing: border-box;
     text-align: center;
 }
 
-/* NOMBRE Y LOGO */
+/* Centrar el nombre y los dos logos */
 
 .marca {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 15px;
 }
+
+/* Mostrar el segundo logo a la izquierda */
+
+.marca::before {
+    content: "";
+    display: block;
+    width: 65px;
+    height: 65px;
+    flex-shrink: 0;
+    background-image: url("img/logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/* Configurar el titulo principal */
 
 h1 {
     color: rgb(138, 199, 255);
     margin: 0;
 }
 
-.logo-header {
-    width: 80px;
-    height: auto;
+.marca h1 {
+    font-size: 34px;
 }
+
+/* Configurar el logo de la derecha */
+
+.logo-header {
+    width: 65px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+/* Ocultar el subtitulo antiguo */
+
+.cabecera > h2 {
+    display: none;
+}
+
+/* Configurar los textos generales */
 
 h2 {
     color: white;
 }
-
-.cabecera h2 {
-    margin: 20px 0;
-}
-
-/* TEXTOS GENERALES */
 
 p {
     font-size: 18px;
@@ -62,7 +89,7 @@ img {
     height: auto;
 }
 
-/* MENU DE NAVEGACION */
+/* Centrar el menu de navegacion */
 
 nav ul {
     display: flex;
@@ -71,7 +98,7 @@ nav ul {
     gap: 40px;
     list-style: none;
     padding: 0;
-    margin: 15px 0;
+    margin: 12px 0 0;
 }
 
 nav a {
@@ -83,12 +110,12 @@ nav a:hover {
     color: white;
 }
 
-/* REPRODUCTOR DE MUSICA */
+/* Posicionar el reproductor musical */
 
 .musica {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 16px;
+    right: 18px;
     width: 290px;
     background-color: rgb(70, 86, 106);
     border: 1px solid rgb(138, 199, 255);
@@ -98,7 +125,7 @@ nav a:hover {
     z-index: 20;
 }
 
-/* PRIMERA FILA */
+/* Alinear los elementos del reproductor */
 
 .musica-encabezado {
     display: flex;
@@ -112,7 +139,7 @@ nav a:hover {
     font-size: 16px;
 }
 
-/* BOTON PLAY Y PAUSA */
+/* Configurar el boton de reproduccion */
 
 .boton-musica {
     width: 38px;
@@ -134,7 +161,7 @@ nav a:hover {
     outline-offset: 3px;
 }
 
-/* SEGUNDA FILA: VOLUMEN */
+/* Configurar el control de volumen */
 
 .controles-volumen {
     display: flex;
@@ -159,7 +186,7 @@ nav a:hover {
     min-width: 34px;
 }
 
-/* PRESENTACION DE LAS SECCIONES */
+/* Centrar la presentacion de las secciones */
 
 body > h2 {
     text-align: center;
@@ -171,7 +198,7 @@ body > p {
     margin: 20px auto;
 }
 
-/* BANNERS */
+/* Configurar los banners */
 
 .banner-seccion {
     position: relative;
@@ -219,7 +246,7 @@ body > p {
     text-align: center;
 }
 
-/* TARJETAS DE NOTICIAS */
+/* Configurar las tarjetas de noticias */
 
 .tarjeta {
     background-color: rgb(89, 107, 128);
@@ -251,7 +278,7 @@ body > p {
     text-align: left;
 }
 
-/* BOTON LEER MAS */
+/* Configurar los botones de las noticias */
 
 .boton {
     display: inline-block;
@@ -268,7 +295,7 @@ body > p {
     background-color: white;
 }
 
-/* ETIQUETAS */
+/* Configurar las etiquetas */
 
 .etiquetas {
     max-width: 800px;
@@ -294,7 +321,7 @@ body > p {
     color: rgb(48, 66, 87);
 }
 
-/* FILTROS */
+/* Configurar los filtros */
 
 .estado-filtro {
     font-size: 16px;
@@ -314,7 +341,7 @@ body > p {
     background-color: white;
 }
 
-/* ELEMENTOS OCULTOS */
+/* Ocultar los elementos desactivados */
 
 .tarjeta[hidden],
 .contenido-extra[hidden],
@@ -323,32 +350,51 @@ body > p {
     display: none;
 }
 
-/* ADAPTACION A MOVILES */
+/* Adaptar la cabecera a pantallas medianas */
+
+@media (max-width: 1280px) {
+
+    .musica {
+        position: static;
+        width: 100%;
+        max-width: 290px;
+        margin: 16px auto 0;
+    }
+
+}
+
+/* Adaptar el diseño a moviles */
 
 @media (max-width: 768px) {
 
-    h1 {
-        font-size: 24px;
-    }
-
-    .logo-header {
-        width: 55px;
+    .cabecera {
+        width: calc(100% - 20px);
+        padding: 14px 12px;
     }
 
     .marca {
         gap: 8px;
-        flex-wrap: wrap;
+    }
+
+    .marca h1 {
+        font-size: 20px;
+    }
+
+    .marca::before {
+        width: 38px;
+        height: 38px;
+    }
+
+    .logo-header {
+        width: 38px;
     }
 
     nav ul {
         gap: 15px;
     }
 
-    .musica {
-        position: static;
-        width: 100%;
-        max-width: 290px;
-        margin: 15px auto 0;
+    nav a {
+        font-size: 16px;
     }
 
     .banner-imagen {
@@ -362,4 +408,5 @@ body > p {
     .banner-texto p {
         font-size: 18px;
     }
+
 }

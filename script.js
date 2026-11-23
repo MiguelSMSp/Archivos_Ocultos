@@ -1,292 +1,441 @@
 
-// Configurar el reproductor de música ambiental
+ // Configurar las secciones que contienen noticias
+const seccionesNoticias = [
+    { archivo: "ovnis.html", nombre: "OVNIS" },
+    { archivo: "conspiraciones.html", nombre: "Conspiraciones" },
+    { archivo: "enigmas.html", nombre: "Enigmas del pasado" }
+];
 
-const reproductorAntiguo = document.querySelector(".musica");
+let navegacionActual = 0;
 
-if (reproductorAntiguo) {
 
-    // Crear el nuevo reproductor fijo
+// Normalizar los identificadores de etiquetas
+function normalizarEtiqueta(valor) {
+
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+}
+
+
+// Obtener el identificador de cualquier etiqueta
+function obtenerIdentificadorEtiqueta(boton) {
+
+    return normalizarEtiqueta(
+        boton.getAttribute("data-etiqueta") || boton.textContent
+    );
+
+}
+
+
+// Preparar el reproductor sin reiniciar el audio al navegar
+function iniciarReproductor() {
+
+    const marcador = document.querySelector(".musica");
+
+    if (!marcador) {
+        return;
+    }
+
     const reproductor = document.createElement("div");
     reproductor.className = "musica";
 
-    // Crear el archivo de audio
     const audio = document.createElement("audio");
 
-    audio.src = "audio/musica-ambiental.mp3";
+    audio.src = new URL(
+        "audio/musica-ambiental.mp3",
+        document.baseURI
+    ).href;
+
     audio.loop = true;
     audio.volume = 0.35;
     audio.preload = "none";
 
-    // Crear la primera fila
-    const encabezadoMusica = document.createElement("div");
-    encabezadoMusica.className = "musica-encabezado";
+    // Crear el encabezado del reproductor
+    const encabezado = document.createElement("div");
+    encabezado.className = "musica-encabezado";
 
-    // Crear el botón Play / Pausa
-    const botonMusica = document.createElement("button");
+    const boton = document.createElement("button");
+    boton.className = "boton-musica";
+    boton.type = "button";
+    boton.textContent = "▶";
+    boton.title = "Reproducir música";
+    boton.setAttribute("aria-label", "Reproducir música");
 
-    botonMusica.className = "boton-musica";
-    botonMusica.type = "button";
-    botonMusica.textContent = "▶";
-    botonMusica.title = "Reproducir música";
-    botonMusica.setAttribute("aria-label", "Reproducir música");
+    const titulo = document.createElement("span");
+    titulo.textContent = "Música ambiental 🎵";
 
-    // Crear el título del reproductor
-    const tituloMusica = document.createElement("span");
-    tituloMusica.textContent = "Música ambiental 🎵";
+    encabezado.append(boton, titulo);
 
-    encabezadoMusica.append(botonMusica, tituloMusica);
+    // Crear los controles de volumen
+    const controles = document.createElement("div");
+    controles.className = "controles-volumen";
 
-    // Crear el control de volumen
-    const controlesVolumen = document.createElement("div");
-    controlesVolumen.className = "controles-volumen";
+    const etiqueta = document.createElement("label");
+    etiqueta.textContent = "Volumen";
+    etiqueta.htmlFor = "volumen-musica";
 
-    const etiquetaVolumen = document.createElement("label");
-    etiquetaVolumen.textContent = "Volumen";
-    etiquetaVolumen.htmlFor = "volumen-musica";
-
-    const barraVolumen = document.createElement("input");
-
-    barraVolumen.type = "range";
-    barraVolumen.id = "volumen-musica";
-    barraVolumen.min = "0";
-    barraVolumen.max = "100";
-    barraVolumen.value = "35";
+    const volumen = document.createElement("input");
+    volumen.id = "volumen-musica";
+    volumen.type = "range";
+    volumen.min = "0";
+    volumen.max = "100";
+    volumen.value = "35";
 
     const porcentaje = document.createElement("span");
     porcentaje.textContent = "35%";
 
-    controlesVolumen.append(
-        etiquetaVolumen,
-        barraVolumen,
-        porcentaje
-    );
+    controles.append(etiqueta, volumen, porcentaje);
 
-    // Introducir los elementos en el reproductor
-    reproductor.append(
-        encabezadoMusica,
-        controlesVolumen,
-        audio
-    );
+    reproductor.append(encabezado, controles, audio);
+    marcador.replaceWith(reproductor);
 
-    // Sustituir el reproductor anterior
-    reproductorAntiguo.replaceWith(reproductor);
-
-    // Reproducir y pausar la música
-    botonMusica.addEventListener("click", async function() {
+    // Reproducir y pausar sin reiniciar la canción
+    boton.addEventListener("click", async function() {
 
         if (audio.paused) {
 
             try {
                 await audio.play();
             } catch (error) {
-                console.error(error);
-                alert("No se pudo reproducir la música.");
+                console.error(
+                    "No se pudo reproducir la música:",
+                    error
+                );
             }
 
         } else {
-
             audio.pause();
-
         }
 
     });
 
-    // Cambiar el icono al reproducir
+    // Actualizar el botón al reproducir
     audio.addEventListener("play", function() {
 
-        botonMusica.textContent = "⏸";
-        botonMusica.title = "Pausar música";
-        botonMusica.setAttribute("aria-label", "Pausar música");
+        boton.textContent = "⏸";
+        boton.title = "Pausar música";
+        boton.setAttribute("aria-label", "Pausar música");
 
     });
 
-    // Cambiar el icono al pausar
+    // Actualizar el botón al pausar
     audio.addEventListener("pause", function() {
 
-        botonMusica.textContent = "▶";
-        botonMusica.title = "Reproducir música";
-        botonMusica.setAttribute("aria-label", "Reproducir música");
+        boton.textContent = "▶";
+        boton.title = "Reproducir música";
+        boton.setAttribute("aria-label", "Reproducir música");
 
     });
 
-    // Controlar el volumen
-    barraVolumen.addEventListener("input", function() {
+    // Ajustar el volumen
+    volumen.addEventListener("input", function() {
 
-        audio.volume = Number(barraVolumen.value) / 100;
-
-        porcentaje.textContent = barraVolumen.value + "%";
+        audio.volume = Number(volumen.value) / 100;
+        porcentaje.textContent = volumen.value + "%";
 
     });
 
 }
 
 
-// Mostrar y ocultar el contenido de las noticias
+// Obtener todas las noticias de las tres secciones
+async function obtenerTodasLasNoticias() {
 
-document.addEventListener("click", function(evento) {
+    return Promise.all(
 
-    const boton = evento.target.closest(".tarjeta .boton");
+        seccionesNoticias.map(async function(seccion) {
 
-    if (!boton) {
-        return;
-    }
+            // Obtener la dirección de la sección
+            const url = new URL(
+                seccion.archivo,
+                document.baseURI
+            );
 
-    const tarjeta = boton.closest(".tarjeta");
-    const contenido = tarjeta.querySelector(".contenido-extra");
+            // Descargar la versión actual del archivo
+            const respuesta = await fetch(url, {
+                cache: "no-store"
+            });
 
-    if (contenido.hidden) {
-
-        contenido.hidden = false;
-        boton.textContent = "Leer menos";
-
-    } else {
-
-        contenido.hidden = true;
-        boton.textContent = "Leer más";
-
-    }
-
-});
-
-
-// Filtrar noticias por etiquetas
-
-document.addEventListener("click", function(evento) {
-
-    const etiqueta = evento.target.closest(".etiqueta");
-
-    if (!etiqueta) {
-        return;
-    }
-
-    const seleccionada = etiqueta.dataset.etiqueta;
-
-    const tarjetas = document.querySelectorAll(".tarjeta");
-
-    tarjetas.forEach(function(tarjeta) {
-
-        const etiquetasNoticia = tarjeta.querySelectorAll(".etiqueta");
-
-        let coincide = false;
-
-        etiquetasNoticia.forEach(function(otraEtiqueta) {
-
-            if (otraEtiqueta.dataset.etiqueta === seleccionada) {
-                coincide = true;
+            if (!respuesta.ok) {
+                throw new Error(
+                    "No se pudo abrir " + seccion.archivo
+                );
             }
 
-        });
+            const html = await respuesta.text();
 
-        tarjeta.hidden = !coincide;
+            // Convertir el HTML en un documento
+            const pagina = new DOMParser().parseFromString(
+                html,
+                "text/html"
+            );
 
-    });
+            // Recuperar todos los artículos
+            return {
+                nombre: seccion.nombre,
+                articulos: Array.from(
+                    pagina.querySelectorAll("article.tarjeta")
+                )
+            };
 
-    // Mostrar el filtro seleccionado
-    const aviso = document.getElementById("avisoFiltro");
-    const limpiar = document.getElementById("limpiarFiltro");
+        })
 
-    aviso.textContent = "Noticias relacionadas con: " + etiqueta.textContent;
-    aviso.hidden = false;
-    limpiar.hidden = false;
+    );
 
-});
+}
 
 
-// Mostrar todas las noticias
+// Mostrar exclusivamente las noticias con la etiqueta seleccionada
+async function mostrarResultadosEtiqueta(solicitud) {
 
-document.addEventListener("click", function(evento) {
+    const resultados = document.getElementById(
+        "resultadosEtiquetas"
+    );
 
-    const boton = evento.target.closest("#limpiarFiltro");
+    const titulo = document.getElementById(
+        "tituloEtiqueta"
+    );
 
-    if (!boton) {
+    const estado = document.getElementById(
+        "estadoEtiquetas"
+    );
+
+    if (!resultados || !titulo || !estado) {
         return;
     }
 
-    const tarjetas = document.querySelectorAll(".tarjeta");
+    // Obtener la etiqueta seleccionada
+    const parametros = new URLSearchParams(
+        window.location.search
+    );
 
-    tarjetas.forEach(function(tarjeta) {
-        tarjeta.hidden = false;
-    });
+    const valor = parametros.get("etiqueta");
+    const buscada = normalizarEtiqueta(valor);
 
-    // Ocultar el aviso del filtro
-    document.getElementById("avisoFiltro").hidden = true;
-    boton.hidden = true;
+    resultados.replaceChildren();
+    titulo.textContent = "Noticias relacionadas";
 
-});
+    if (!buscada) {
 
+        estado.textContent =
+            "Selecciona una etiqueta de cualquier noticia.";
 
-// Cargar las secciones sin recargar la página
+        return;
+    }
 
-async function cargarSeccion(direccion, guardarHistorial) {
+    estado.textContent =
+        "Buscando noticias en todas las secciones...";
 
     try {
 
-        // Obtener el HTML de la nueva sección
-        const respuesta = await fetch(direccion);
+        // Consultar todas las secciones del blog
+        const paginas = await obtenerTodasLasNoticias();
 
-        if (!respuesta.ok) {
-            throw new Error("No se pudo cargar la página");
+        if (solicitud !== navegacionActual) {
+            return;
         }
 
-        const codigoHTML = await respuesta.text();
+        const fragmento = document.createDocumentFragment();
+
+        let cantidad = 0;
+        let etiquetaVisible = String(valor).replace(
+            /[-_]/g,
+            " "
+        );
+
+        paginas.forEach(function(pagina) {
+
+            pagina.articulos.forEach(function(articulo) {
+
+                // Obtener todas las etiquetas del artículo
+                const etiquetas = Array.from(
+                    articulo.querySelectorAll(".etiqueta")
+                );
+
+                // Buscar coincidencia exacta con la etiqueta
+                const coincidencia = etiquetas.find(
+                    function(etiqueta) {
+
+                        return obtenerIdentificadorEtiqueta(
+                            etiqueta
+                        ) === buscada;
+
+                    }
+                );
+
+                // Ignorar cualquier artículo sin la etiqueta
+                if (!coincidencia) {
+                    return;
+                }
+
+                etiquetaVisible = coincidencia.textContent.trim();
+
+                // Copiar el artículo coincidente
+                const copia = articulo.cloneNode(true);
+
+                // Mostrar la sección de origen
+                const origen = document.createElement("p");
+
+                origen.textContent =
+                    "Sección: " + pagina.nombre;
+
+                copia.prepend(origen);
+
+                // Mantener la noticia cerrada inicialmente
+                const contenido = copia.querySelector(
+                    ".contenido-extra"
+                );
+
+                if (contenido) {
+                    contenido.hidden = true;
+                }
+
+                // Conservar el botón Leer más
+                const boton = copia.querySelector(".boton");
+
+                if (boton) {
+                    boton.textContent = "Leer más";
+                }
+
+                // Añadir la noticia a los resultados
+                fragmento.append(copia);
+
+                cantidad++;
+
+            });
+
+        });
+
+        // Mostrar todos los artículos coincidentes
+        resultados.replaceChildren(fragmento);
+
+        titulo.textContent =
+            "Etiqueta: " + etiquetaVisible;
+
+        // Mostrar el número de noticias encontradas
+        if (cantidad === 1) {
+
+            estado.textContent =
+                "Se ha encontrado 1 noticia con esta etiqueta.";
+
+        } else {
+
+            estado.textContent =
+                "Se han encontrado " + cantidad +
+                " noticias con esta etiqueta.";
+
+        }
+
+    } catch (error) {
+
+        if (solicitud !== navegacionActual) {
+            return;
+        }
+
+        console.error(error);
+
+        estado.textContent =
+            "No se pudieron consultar todas las secciones. " +
+            "Comprueba Live Server y la consola.";
+
+    }
+
+}
+
+
+// Navegar entre páginas sin detener el reproductor
+async function cargarPagina(direccion, guardarHistorial) {
+
+    const solicitud = ++navegacionActual;
+
+    try {
+
+        // Descargar la página seleccionada
+        const respuesta = await fetch(direccion, {
+            cache: "no-store"
+        });
+
+        if (!respuesta.ok) {
+            throw new Error("No se pudo cargar la página.");
+        }
+
+        const html = await respuesta.text();
+
+        if (solicitud !== navegacionActual) {
+            return;
+        }
 
         // Convertir el HTML en un documento
-        const parser = new DOMParser();
-
-        const paginaNueva = parser.parseFromString(
-            codigoHTML,
+        const pagina = new DOMParser().parseFromString(
+            html,
             "text/html"
         );
 
-        // Localizar la cabecera actual
-        const cabecera = document.querySelector(".cabecera");
+        const cabecera = document.querySelector(
+            ".cabecera"
+        );
 
-        if (!cabecera || !paginaNueva.querySelector(".cabecera")) {
-            throw new Error("No se encontró la cabecera");
+        if (!cabecera || !pagina.querySelector(".cabecera")) {
+            throw new Error("No se encontró la cabecera.");
         }
 
-        // Seleccionar el contenido actual
-        const contenidoActual = Array.from(document.body.children)
-            .filter(function(elemento) {
+        // Obtener el contenido actual
+        const anteriores = Array.from(
+            document.body.children
+        ).filter(function(elemento) {
 
-                return elemento !== cabecera
-                    && elemento.tagName !== "SCRIPT";
+            return elemento !== cabecera &&
+                elemento.tagName !== "SCRIPT";
 
-            });
+        });
 
-        // Seleccionar el contenido de la nueva página
-        const contenidoNuevo = Array.from(paginaNueva.body.children)
-            .filter(function(elemento) {
+        // Obtener el contenido nuevo
+        const nuevos = Array.from(
+            pagina.body.children
+        ).filter(function(elemento) {
 
-                return !elemento.classList.contains("cabecera")
-                    && elemento.tagName !== "SCRIPT";
+            return !elemento.classList.contains("cabecera") &&
+                elemento.tagName !== "SCRIPT";
 
-            });
+        });
 
         // Eliminar el contenido anterior
-        contenidoActual.forEach(function(elemento) {
+        anteriores.forEach(function(elemento) {
             elemento.remove();
         });
 
         // Insertar el contenido nuevo
-        cabecera.after(...contenidoNuevo);
+        cabecera.after(...nuevos);
 
-        // Actualizar el título de la página
-        document.title = paginaNueva.title;
+        document.title = pagina.title;
 
-        // Actualizar el historial del navegador
+        // Actualizar la dirección del navegador
         if (guardarHistorial) {
             history.pushState({}, "", direccion);
         }
 
-        // Volver al principio de la página
         window.scrollTo(0, 0);
+
+        // Cargar los resultados de etiquetas
+        if (document.getElementById("resultadosEtiquetas")) {
+
+            await mostrarResultadosEtiqueta(solicitud);
+
+        }
 
     } catch (error) {
 
-        console.error(error);
+        if (solicitud !== navegacionActual) {
+            return;
+        }
 
-        // Utilizar la navegación normal si ocurre un error
+        console.error(error);
         window.location.href = direccion;
 
     }
@@ -294,48 +443,116 @@ async function cargarSeccion(direccion, guardarHistorial) {
 }
 
 
-// Gestionar los enlaces del menú
-
+// Gestionar los botones, las etiquetas y el menú
 document.addEventListener("click", function(evento) {
 
-    const enlace = evento.target.closest(".cabecera nav a");
+    if (!(evento.target instanceof Element)) {
+        return;
+    }
+
+    // Gestionar Leer más y Leer menos
+    const botonLeer = evento.target.closest(
+        ".tarjeta .boton"
+    );
+
+    if (botonLeer) {
+
+        const contenido = botonLeer.closest(
+            ".tarjeta"
+        ).querySelector(".contenido-extra");
+
+        if (!contenido) {
+            return;
+        }
+
+        contenido.hidden = !contenido.hidden;
+
+        botonLeer.textContent = contenido.hidden
+            ? "Leer más"
+            : "Leer menos";
+
+        return;
+    }
+
+    // Gestionar cualquier etiqueta actual o futura
+    const etiqueta = evento.target.closest(".etiqueta");
+
+    if (etiqueta) {
+
+        const identificador = obtenerIdentificadorEtiqueta(
+            etiqueta
+        );
+
+        if (!identificador) {
+            return;
+        }
+
+        // Crear la dirección del filtro global
+        const destino = new URL(
+            "etiquetas.html",
+            document.baseURI
+        );
+
+        destino.searchParams.set(
+            "etiqueta",
+            identificador
+        );
+
+        // Abrir los resultados sin detener la música
+        cargarPagina(destino.href, true);
+
+        return;
+    }
+
+    // Gestionar los enlaces del menú
+    const enlace = evento.target.closest(
+        ".cabecera nav a"
+    );
 
     if (!enlace) {
         return;
     }
 
-    // Permitir abrir enlaces en otras pestañas
-    if (evento.ctrlKey || evento.metaKey ||
-        evento.shiftKey || evento.altKey ||
+    // Respetar los clics especiales del navegador
+    if (
         evento.button !== 0 ||
-        enlace.target === "_blank") {
+        evento.ctrlKey ||
+        evento.metaKey ||
+        evento.shiftKey ||
+        evento.altKey ||
+        enlace.target === "_blank"
+    ) {
         return;
     }
 
-    // Comprobar que el enlace pertenece a nuestra web
     const destino = new URL(enlace.href);
 
     if (destino.origin !== window.location.origin) {
         return;
     }
 
-    // Evitar la recarga completa
     evento.preventDefault();
 
-    if (destino.href === window.location.href) {
-        return;
+    if (destino.href !== window.location.href) {
+        cargarPagina(destino.href, true);
     }
 
-    // Cargar la sección seleccionada
-    cargarSeccion(destino.href, true);
-
 });
 
 
-// Permitir navegar hacia atrás y adelante
-
+// Mantener el historial del navegador
 window.addEventListener("popstate", function() {
 
-    cargarSeccion(window.location.href, false);
+    cargarPagina(window.location.href, false);
 
 });
+
+
+// Iniciar el reproductor y la búsqueda inicial
+iniciarReproductor();
+
+if (document.getElementById("resultadosEtiquetas")) {
+
+    mostrarResultadosEtiqueta(navegacionActual);
+
+}
