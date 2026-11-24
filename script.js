@@ -1,17 +1,16 @@
 
- // Configurar las secciones que contienen noticias
+ // Configurar las secciones del blog
 const seccionesNoticias = [
     { archivo: "ovnis.html", nombre: "OVNIS" },
     { archivo: "conspiraciones.html", nombre: "Conspiraciones" },
     { archivo: "enigmas.html", nombre: "Enigmas del pasado" }
 ];
 
+const raizBlog = new URL(".", document.currentScript.src);
 let navegacionActual = 0;
 
-
-// Normalizar los identificadores de etiquetas
+// Normalizar las etiquetas para compararlas
 function normalizarEtiqueta(valor) {
-
     return String(valor || "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -19,451 +18,246 @@ function normalizarEtiqueta(valor) {
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
-
 }
 
-
-// Obtener el identificador de cualquier etiqueta
-function obtenerIdentificadorEtiqueta(boton) {
-
-    return normalizarEtiqueta(
-        boton.getAttribute("data-etiqueta") || boton.textContent
-    );
-
+function identificarEtiqueta(boton) {
+    return normalizarEtiqueta(boton.dataset.etiqueta || boton.textContent);
 }
 
-
-// Preparar el reproductor sin reiniciar el audio al navegar
+// Crear los controles del reproductor
 function iniciarReproductor() {
-
     const marcador = document.querySelector(".musica");
-
-    if (!marcador) {
-        return;
-    }
+    if (!marcador) return;
 
     const reproductor = document.createElement("div");
     reproductor.className = "musica";
 
-    const audio = document.createElement("audio");
+    reproductor.innerHTML = `
+        <div class="musica-encabezado">
+            <button class="boton-musica" type="button" aria-label="Reproducir música">▶</button>
+            <span>Música ambiental 🎵</span>
+        </div>
+        <div class="controles-volumen">
+            <label for="volumen-musica">Volumen</label>
+            <input id="volumen-musica" type="range" min="0" max="100" value="35">
+            <span>35%</span>
+        </div>
+        <audio></audio>
+    `;
 
-    audio.src = new URL(
-        "audio/musica-ambiental.mp3",
-        document.baseURI
-    ).href;
+    marcador.replaceWith(reproductor);
 
+    const audio = reproductor.querySelector("audio");
+    const boton = reproductor.querySelector(".boton-musica");
+    const volumen = reproductor.querySelector("#volumen-musica");
+    const porcentaje = reproductor.querySelector(".controles-volumen span");
+
+    audio.src = new URL("audio/musica-ambiental.mp3", raizBlog).href;
     audio.loop = true;
     audio.volume = 0.35;
     audio.preload = "none";
 
-    // Crear el encabezado del reproductor
-    const encabezado = document.createElement("div");
-    encabezado.className = "musica-encabezado";
-
-    const boton = document.createElement("button");
-    boton.className = "boton-musica";
-    boton.type = "button";
-    boton.textContent = "▶";
-    boton.title = "Reproducir música";
-    boton.setAttribute("aria-label", "Reproducir música");
-
-    const titulo = document.createElement("span");
-    titulo.textContent = "Música ambiental 🎵";
-
-    encabezado.append(boton, titulo);
-
-    // Crear los controles de volumen
-    const controles = document.createElement("div");
-    controles.className = "controles-volumen";
-
-    const etiqueta = document.createElement("label");
-    etiqueta.textContent = "Volumen";
-    etiqueta.htmlFor = "volumen-musica";
-
-    const volumen = document.createElement("input");
-    volumen.id = "volumen-musica";
-    volumen.type = "range";
-    volumen.min = "0";
-    volumen.max = "100";
-    volumen.value = "35";
-
-    const porcentaje = document.createElement("span");
-    porcentaje.textContent = "35%";
-
-    controles.append(etiqueta, volumen, porcentaje);
-
-    reproductor.append(encabezado, controles, audio);
-    marcador.replaceWith(reproductor);
-
-    // Reproducir y pausar sin reiniciar la canción
-    boton.addEventListener("click", async function() {
-
-        if (audio.paused) {
-
-            try {
-                await audio.play();
-            } catch (error) {
-                console.error(
-                    "No se pudo reproducir la música:",
-                    error
-                );
-            }
-
-        } else {
+    // Reproducir y pausar sin reiniciar el audio
+    boton.addEventListener("click", async () => {
+        if (!audio.paused) {
             audio.pause();
+            return;
         }
 
+        try {
+            await audio.play();
+        } catch (error) {
+            console.error("No se pudo reproducir la música:", error);
+        }
     });
 
-    // Actualizar el botón al reproducir
-    audio.addEventListener("play", function() {
-
-        boton.textContent = "⏸";
-        boton.title = "Pausar música";
-        boton.setAttribute("aria-label", "Pausar música");
-
-    });
-
-    // Actualizar el botón al pausar
-    audio.addEventListener("pause", function() {
-
-        boton.textContent = "▶";
-        boton.title = "Reproducir música";
-        boton.setAttribute("aria-label", "Reproducir música");
-
-    });
-
-    // Ajustar el volumen
-    volumen.addEventListener("input", function() {
-
-        audio.volume = Number(volumen.value) / 100;
-        porcentaje.textContent = volumen.value + "%";
-
-    });
-
-}
-
-
-// Obtener todas las noticias de las tres secciones
-async function obtenerTodasLasNoticias() {
-
-    return Promise.all(
-
-        seccionesNoticias.map(async function(seccion) {
-
-            // Obtener la dirección de la sección
-            const url = new URL(
-                seccion.archivo,
-                document.baseURI
-            );
-
-            // Descargar la versión actual del archivo
-            const respuesta = await fetch(url, {
-                cache: "no-store"
-            });
-
-            if (!respuesta.ok) {
-                throw new Error(
-                    "No se pudo abrir " + seccion.archivo
-                );
-            }
-
-            const html = await respuesta.text();
-
-            // Convertir el HTML en un documento
-            const pagina = new DOMParser().parseFromString(
-                html,
-                "text/html"
-            );
-
-            // Recuperar todos los artículos
-            return {
-                nombre: seccion.nombre,
-                articulos: Array.from(
-                    pagina.querySelectorAll("article.tarjeta")
-                )
-            };
-
-        })
-
-    );
-
-}
-
-
-// Mostrar exclusivamente las noticias con la etiqueta seleccionada
-async function mostrarResultadosEtiqueta(solicitud) {
-
-    const resultados = document.getElementById(
-        "resultadosEtiquetas"
-    );
-
-    const titulo = document.getElementById(
-        "tituloEtiqueta"
-    );
-
-    const estado = document.getElementById(
-        "estadoEtiquetas"
-    );
-
-    if (!resultados || !titulo || !estado) {
-        return;
+    // Actualizar el botón de reproducción
+    function actualizarBoton() {
+        boton.textContent = audio.paused ? "▶" : "⏸";
+        boton.title = audio.paused ? "Reproducir música" : "Pausar música";
+        boton.setAttribute("aria-label", boton.title);
     }
 
-    // Obtener la etiqueta seleccionada
-    const parametros = new URLSearchParams(
-        window.location.search
-    );
+    audio.addEventListener("play", actualizarBoton);
+    audio.addEventListener("pause", actualizarBoton);
+    actualizarBoton();
 
-    const valor = parametros.get("etiqueta");
+    // Ajustar el volumen
+    volumen.addEventListener("input", () => {
+        audio.volume = Number(volumen.value) / 100;
+        porcentaje.textContent = volumen.value + "%";
+    });
+}
+
+// Obtener las noticias de todas las secciones
+async function obtenerNoticias() {
+    return Promise.all(seccionesNoticias.map(async (seccion) => {
+        const url = new URL(seccion.archivo, raizBlog);
+        const respuesta = await fetch(url, { cache: "no-store" });
+
+        if (!respuesta.ok) {
+            throw new Error("No se pudo abrir " + seccion.archivo);
+        }
+
+        const pagina = new DOMParser().parseFromString(
+            await respuesta.text(),
+            "text/html"
+        );
+
+        return {
+            nombre: seccion.nombre,
+            articulos: [...pagina.querySelectorAll(".tarjeta")]
+        };
+    }));
+}
+
+// Filtrar las noticias exclusivamente por etiquetas
+async function mostrarResultadosEtiqueta(solicitud) {
+    const resultados = document.getElementById("resultadosEtiquetas");
+    const titulo = document.getElementById("tituloEtiqueta");
+    const estado = document.getElementById("estadoEtiquetas");
+
+    if (!resultados || !titulo || !estado) return;
+
+    const valor = new URLSearchParams(location.search).get("etiqueta");
     const buscada = normalizarEtiqueta(valor);
 
     resultados.replaceChildren();
     titulo.textContent = "Noticias relacionadas";
 
     if (!buscada) {
-
-        estado.textContent =
-            "Selecciona una etiqueta de cualquier noticia.";
-
+        estado.textContent = "Selecciona una etiqueta de cualquier noticia.";
         return;
     }
 
-    estado.textContent =
-        "Buscando noticias en todas las secciones...";
+    estado.textContent = "Buscando noticias...";
 
     try {
-
-        // Consultar todas las secciones del blog
-        const paginas = await obtenerTodasLasNoticias();
-
-        if (solicitud !== navegacionActual) {
-            return;
-        }
+        const paginas = await obtenerNoticias();
+        if (solicitud !== navegacionActual) return;
 
         const fragmento = document.createDocumentFragment();
-
         let cantidad = 0;
-        let etiquetaVisible = String(valor).replace(
-            /[-_]/g,
-            " "
-        );
+        let nombreEtiqueta = valor.replace(/[-_]/g, " ");
 
-        paginas.forEach(function(pagina) {
+        for (const pagina of paginas) {
+            for (const tarjeta of pagina.articulos) {
 
-            pagina.articulos.forEach(function(articulo) {
+                // Comprobar las etiquetas del artículo
+                const coincidencia = [...tarjeta.querySelectorAll(".etiqueta")]
+                    .find((boton) => identificarEtiqueta(boton) === buscada);
 
-                // Obtener todas las etiquetas del artículo
-                const etiquetas = Array.from(
-                    articulo.querySelectorAll(".etiqueta")
-                );
+                if (!coincidencia) continue;
 
-                // Buscar coincidencia exacta con la etiqueta
-                const coincidencia = etiquetas.find(
-                    function(etiqueta) {
-
-                        return obtenerIdentificadorEtiqueta(
-                            etiqueta
-                        ) === buscada;
-
-                    }
-                );
-
-                // Ignorar cualquier artículo sin la etiqueta
-                if (!coincidencia) {
-                    return;
-                }
-
-                etiquetaVisible = coincidencia.textContent.trim();
-
-                // Copiar el artículo coincidente
-                const copia = articulo.cloneNode(true);
-
-                // Mostrar la sección de origen
+                // Copiar la noticia coincidente
+                const copia = tarjeta.cloneNode(true);
                 const origen = document.createElement("p");
 
-                origen.textContent =
-                    "Sección: " + pagina.nombre;
-
+                origen.textContent = "Sección: " + pagina.nombre;
                 copia.prepend(origen);
 
-                // Mantener la noticia cerrada inicialmente
-                const contenido = copia.querySelector(
-                    ".contenido-extra"
-                );
+                // Conservar Leer más y Leer menos
+                const contenido = copia.querySelector(".contenido-extra");
+                const botonLeer = copia.querySelector(".boton");
 
-                if (contenido) {
-                    contenido.hidden = true;
-                }
+                if (contenido) contenido.hidden = true;
+                if (botonLeer) botonLeer.textContent = "Leer más";
 
-                // Conservar el botón Leer más
-                const boton = copia.querySelector(".boton");
-
-                if (boton) {
-                    boton.textContent = "Leer más";
-                }
-
-                // Añadir la noticia a los resultados
+                nombreEtiqueta = coincidencia.textContent.trim();
                 fragmento.append(copia);
-
                 cantidad++;
+            }
+        }
 
-            });
-
-        });
-
-        // Mostrar todos los artículos coincidentes
+        // Mostrar las noticias encontradas
         resultados.replaceChildren(fragmento);
 
-        titulo.textContent =
-            "Etiqueta: " + etiquetaVisible;
+        titulo.textContent = "Etiqueta: " + nombreEtiqueta;
 
-        // Mostrar el número de noticias encontradas
-        if (cantidad === 1) {
-
-            estado.textContent =
-                "Se ha encontrado 1 noticia con esta etiqueta.";
-
-        } else {
-
-            estado.textContent =
-                "Se han encontrado " + cantidad +
-                " noticias con esta etiqueta.";
-
-        }
+        estado.textContent = "Se han encontrado " + cantidad +
+            " noticias con esta etiqueta.";
 
     } catch (error) {
-
-        if (solicitud !== navegacionActual) {
-            return;
-        }
+        if (solicitud !== navegacionActual) return;
 
         console.error(error);
-
         estado.textContent =
-            "No se pudieron consultar todas las secciones. " +
-            "Comprueba Live Server y la consola.";
-
+            "No se pudieron cargar las noticias. Comprueba Live Server.";
     }
-
 }
 
-
-// Navegar entre páginas sin detener el reproductor
+// Cambiar de página sin detener el reproductor
 async function cargarPagina(direccion, guardarHistorial) {
-
     const solicitud = ++navegacionActual;
 
     try {
-
-        // Descargar la página seleccionada
-        const respuesta = await fetch(direccion, {
-            cache: "no-store"
-        });
+        const respuesta = await fetch(direccion, { cache: "no-store" });
 
         if (!respuesta.ok) {
-            throw new Error("No se pudo cargar la página.");
+            throw new Error("No se pudo abrir la página.");
         }
 
-        const html = await respuesta.text();
-
-        if (solicitud !== navegacionActual) {
-            return;
-        }
-
-        // Convertir el HTML en un documento
         const pagina = new DOMParser().parseFromString(
-            html,
+            await respuesta.text(),
             "text/html"
         );
 
-        const cabecera = document.querySelector(
-            ".cabecera"
-        );
+        if (solicitud !== navegacionActual) return;
+
+        const cabecera = document.querySelector(".cabecera");
 
         if (!cabecera || !pagina.querySelector(".cabecera")) {
             throw new Error("No se encontró la cabecera.");
         }
 
-        // Obtener el contenido actual
-        const anteriores = Array.from(
-            document.body.children
-        ).filter(function(elemento) {
-
-            return elemento !== cabecera &&
-                elemento.tagName !== "SCRIPT";
-
-        });
-
-        // Obtener el contenido nuevo
-        const nuevos = Array.from(
-            pagina.body.children
-        ).filter(function(elemento) {
-
-            return !elemento.classList.contains("cabecera") &&
-                elemento.tagName !== "SCRIPT";
-
-        });
+        // Seleccionar el contenido nuevo
+        const nuevos = [...pagina.body.children].filter((elemento) =>
+            !elemento.classList.contains("cabecera") &&
+            elemento.tagName !== "SCRIPT"
+        );
 
         // Eliminar el contenido anterior
-        anteriores.forEach(function(elemento) {
-            elemento.remove();
-        });
+        [...document.body.children]
+            .filter((elemento) =>
+                elemento !== cabecera && elemento.tagName !== "SCRIPT"
+            )
+            .forEach((elemento) => elemento.remove());
 
         // Insertar el contenido nuevo
         cabecera.after(...nuevos);
-
         document.title = pagina.title;
 
-        // Actualizar la dirección del navegador
         if (guardarHistorial) {
             history.pushState({}, "", direccion);
         }
 
         window.scrollTo(0, 0);
 
-        // Cargar los resultados de etiquetas
+        // Mostrar las noticias filtradas cuando corresponda
         if (document.getElementById("resultadosEtiquetas")) {
-
             await mostrarResultadosEtiqueta(solicitud);
-
         }
 
     } catch (error) {
-
-        if (solicitud !== navegacionActual) {
-            return;
-        }
+        if (solicitud !== navegacionActual) return;
 
         console.error(error);
-        window.location.href = direccion;
-
+        location.href = direccion;
     }
-
 }
 
-
-// Gestionar los botones, las etiquetas y el menú
-document.addEventListener("click", function(evento) {
-
-    if (!(evento.target instanceof Element)) {
-        return;
-    }
+// Gestionar los botones y enlaces del blog
+document.addEventListener("click", (evento) => {
+    if (!(evento.target instanceof Element)) return;
 
     // Gestionar Leer más y Leer menos
-    const botonLeer = evento.target.closest(
-        ".tarjeta .boton"
-    );
+    const botonLeer = evento.target.closest(".tarjeta .boton");
 
     if (botonLeer) {
+        const contenido = botonLeer.closest(".tarjeta")
+            .querySelector(".contenido-extra");
 
-        const contenido = botonLeer.closest(
-            ".tarjeta"
-        ).querySelector(".contenido-extra");
-
-        if (!contenido) {
-            return;
-        }
+        if (!contenido) return;
 
         contenido.hidden = !contenido.hidden;
 
@@ -474,85 +268,57 @@ document.addEventListener("click", function(evento) {
         return;
     }
 
-    // Gestionar cualquier etiqueta actual o futura
+    // Respetar los enlaces gestionados desde Inicio
+    if (evento.defaultPrevented) return;
+
+    // Gestionar las etiquetas actuales y futuras
     const etiqueta = evento.target.closest(".etiqueta");
 
     if (etiqueta) {
+        const identificador = identificarEtiqueta(etiqueta);
+        if (!identificador) return;
 
-        const identificador = obtenerIdentificadorEtiqueta(
-            etiqueta
-        );
+        const destino = new URL("etiquetas.html", raizBlog);
+        destino.searchParams.set("etiqueta", identificador);
 
-        if (!identificador) {
-            return;
-        }
-
-        // Crear la dirección del filtro global
-        const destino = new URL(
-            "etiquetas.html",
-            document.baseURI
-        );
-
-        destino.searchParams.set(
-            "etiqueta",
-            identificador
-        );
-
-        // Abrir los resultados sin detener la música
         cargarPagina(destino.href, true);
-
         return;
     }
 
-    // Gestionar los enlaces del menú
+    // Gestionar los enlaces del menú y de Inicio
     const enlace = evento.target.closest(
-        ".cabecera nav a"
+        ".cabecera nav a, a[data-navegacion]"
     );
 
-    if (!enlace) {
-        return;
-    }
-
-    // Respetar los clics especiales del navegador
-    if (
+    if (!enlace ||
         evento.button !== 0 ||
         evento.ctrlKey ||
         evento.metaKey ||
         evento.shiftKey ||
         evento.altKey ||
-        enlace.target === "_blank"
-    ) {
+        enlace.target === "_blank") {
         return;
     }
 
     const destino = new URL(enlace.href);
 
-    if (destino.origin !== window.location.origin) {
-        return;
-    }
+    if (destino.origin !== location.origin) return;
 
     evento.preventDefault();
 
-    if (destino.href !== window.location.href) {
+    if (destino.href !== location.href) {
         cargarPagina(destino.href, true);
     }
-
 });
 
-
-// Mantener el historial del navegador
-window.addEventListener("popstate", function() {
-
-    cargarPagina(window.location.href, false);
-
+// Permitir navegar con Atrás y Adelante
+window.addEventListener("popstate", () => {
+    cargarPagina(location.href, false);
 });
 
-
-// Iniciar el reproductor y la búsqueda inicial
+// Iniciar el reproductor y cargar los resultados
 iniciarReproductor();
 
 if (document.getElementById("resultadosEtiquetas")) {
-
     mostrarResultadosEtiqueta(navegacionActual);
-
 }
