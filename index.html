@@ -1,65 +1,167 @@
 
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="styles.css">
-        <title>Archivos Ocultos - Inicio</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="inicio.css">
+    <title>Archivos Ocultos - Inicio</title>
+</head>
+<body>
+    <header class="cabecera">
+        <div class="marca">
+            <h1>Archivos Ocultos</h1>
+            <img src="img/logo.png" alt="Logo de Archivos Ocultos" class="logo-header">
+        </div>
 
-    <body>
+        <h2>Misterios y conspiraciones</h2>
 
-        <header class="cabecera">
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="ovnis.html">OVNIS</a></li>
+                <li><a href="conspiraciones.html">Conspiraciones</a></li>
+                <li><a href="enigmas.html">Enigmas del pasado</a></li>
+            </ul>
+        </nav>
 
-            <div class="marca">
-                <h1>Archivos Ocultos</h1>
-                <img src="img/logo.png" alt="Logo de Archivos Ocultos" class="logo-header">
-            </div>
+        <details class="musica">
+            <summary>Música ambiental 🎵</summary>
+            <div class="youtube-contenedor"></div>
+        </details>
+    </header>
 
-            <h2>Misterios y conspiraciones</h2>
+    <section class="banner-seccion">
+        <img src="img/banner.png" alt="Paisaje espacial de Archivos Ocultos" class="banner-imagen">
+        <div class="banner-texto">
+            <h2>La verdad no siempre está a la vista</h2>
+            <p>OVNIS, operaciones secretas y enigmas que todavía desafían nuestra comprensión del mundo.</p>
+        </div>
+    </section>
 
-            <nav>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="ovnis.html">OVNIS</a></li>
-                    <li><a href="conspiraciones.html">Conspiraciones</a></li>
-                    <li><a href="enigmas.html">Enigmas del pasado</a></li>
-                </ul>
-            </nav>
-
-            <details class="musica">
-                <summary>Música ambiental 🎵</summary>
-                <div class="youtube-contenedor"></div>
-            </details>
-
-        </header>
-
-        <section class="banner-seccion">
-
-            <img src="img/banner.png" alt="Banner de Archivos Ocultos" class="banner-imagen">
-
-            <div class="banner-texto">
-                <h2>Bienvenido a Archivos Ocultos</h2>
-
-                <p>
-                    Archivos Ocultos es un blog dedicado a explorar
-                    los grandes misterios de la humanidad,
-                    los fenómenos extraterrestres y las teorías
-                    de la conspiración.
-                </p>
-            </div>
-
+    <!-- Conservar la música al abrir enlaces de la portada -->
+    <main class="inicio" onclick="
+        const enlace = event.target.closest('a[data-navegacion]');
+        if (enlace && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && typeof cargarPagina === 'function') {
+            event.preventDefault();
+            cargarPagina(enlace.href, true);
+        }
+    ">
+        <section class="inicio-introduccion">
+            <h2>Bienvenido a Archivos Ocultos</h2>
+            <p>
+                Siempre he creído que hay historias que merecen ser investigadas más allá de las explicaciones oficiales.
+                En este espacio reúno sucesos inexplicables, documentos inquietantes y secretos del pasado que siguen
+                planteando preguntas. ¿Estás dispuesto a explorar lo que otros prefieren ignorar?
+            </p>
         </section>
 
-        <p>
-            Aquí encontrarás historias sobre avistamientos
-            de ovnis, acontecimientos inexplicables,
-            operaciones secretas y enigmas de las
-            civilizaciones antiguas.
-        </p>
+        <section class="inicio-bloque" aria-labelledby="explorar-archivos">
+            <h2 id="explorar-archivos">Explora las secciones</h2>
 
-        <script src="script.js"></script>
+            <div class="inicio-categorias">
 
-    </body>
+                <a class="inicio-categoria" href="ovnis.html" data-navegacion>
+                    <img src="img/inicio-ovnis.png" alt="Instalaciones relacionadas con el Área 51">
+
+                    <div class="inicio-categoria-texto">
+                        <h3>OVNIS</h3>
+                        <p>Avistamientos, encuentros inexplicables y posibles visitantes de otros mundos.</p>
+                        <span class="inicio-enlace">Explorar OVNIS</span>
+                    </div>
+                </a>
+
+                <a class="inicio-categoria" href="conspiraciones.html" data-navegacion>
+                    <img src="img/inicio-conspiraciones.png" alt="Antenas del proyecto HAARP">
+
+                    <div class="inicio-categoria-texto">
+                        <h3>Conspiraciones</h3>
+                        <p>Operaciones encubiertas, experimentos secretos y tecnologías inquietantes.</p>
+                        <span class="inicio-enlace">Explorar conspiraciones</span>
+                    </div>
+                </a>
+
+                <a class="inicio-categoria" href="enigmas.html" data-navegacion>
+                    <img src="img/inicio-enigmas.png" alt="Monumento prehistórico de Stonehenge">
+
+                    <div class="inicio-categoria-texto">
+                        <h3>Enigmas del pasado</h3>
+                        <p>Monumentos antiguos, reliquias perdidas y civilizaciones rodeadas de misterio.</p>
+                        <span class="inicio-enlace">Explorar enigmas</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="inicio-bloque" aria-labelledby="expediente-destacado">
+            <h2 id="expediente-destacado">Expediente destacado</h2>
+
+            <article class="inicio-destacado">
+                <img src="img/area51.png" alt="Entrada a una instalación militar en el desierto de Nevada">
+
+                <div class="inicio-destacado-texto">
+                    <p class="inicio-categoria-pequena">EXPEDIENTE · OVNIS</p>
+
+                    <h3>Área 51: ¿qué esconde realmente el desierto de Nevada?</h3>
+
+                    <p>
+                        Durante décadas, el Área 51 ha despertado sospechas sobre tecnología desconocida,
+                        objetos voladores y proyectos militares clasificados. ¿Hasta dónde llega el secreto?
+                    </p>
+
+                    <a class="boton" href="ovnis.html" data-navegacion>Descubrir el expediente</a>
+                </div>
+            </article>
+        </section>
+
+        <section class="inicio-bloque" aria-labelledby="investigaciones-recientes">
+            <h2 id="investigaciones-recientes">Investigaciones recientes</h2>
+
+            <p class="inicio-descripcion">
+                Una selección de los misterios más recientes de Archivos Ocultos.
+            </p>
+
+            <div class="inicio-novedades">
+
+                <article class="inicio-novedad">
+                    <img src="img/haarp.png" alt="Instalaciones del proyecto HAARP en Alaska">
+
+                    <div class="inicio-novedad-texto">
+                        <p class="inicio-categoria-pequena">CONSPIRACIONES</p>
+                        <h3>HAARP: ¿control climático y hologramas?</h3>
+                        <p>Una instalación real y las teorías que la relacionan con proyectos secretos.</p>
+                        <a href="conspiraciones.html" data-navegacion>Ver en la sección</a>
+                    </div>
+                </article>
+
+                <article class="inicio-novedad">
+                    <img src="img/templo-salomon.png" alt="Representación histórica del Templo de Salomón">
+
+                    <div class="inicio-novedad-texto">
+                        <p class="inicio-categoria-pequena">ENIGMAS DEL PASADO</p>
+                        <h3>El Templo de Salomón y los templarios</h3>
+                        <p>Reliquias desaparecidas y las leyendas sobre secretos ocultos bajo Jerusalén.</p>
+                        <a href="enigmas.html" data-navegacion>Ver en la sección</a>
+                    </div>
+                </article>
+
+                <article class="inicio-novedad">
+                    <img src="img/stonehenge.png" alt="Círculo de piedras de Stonehenge">
+
+                    <div class="inicio-novedad-texto">
+                        <p class="inicio-categoria-pequena">ENIGMAS DEL PASADO</p>
+                        <h3>Stonehenge y el conocimiento perdido</h3>
+                        <p>Enormes piedras, alineaciones astronómicas y preguntas todavía abiertas.</p>
+                        <a href="enigmas.html" data-navegacion>Ver en la sección</a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
 </html>

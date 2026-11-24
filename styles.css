@@ -1,4 +1,3 @@
-
 /* Configurar el fondo y el texto */
 
 body {
@@ -409,4 +408,240 @@ body > p {
         font-size: 18px;
     }
 
+}
+
+/* Configurar la portada sin modificar las otras secciones */
+
+.inicio {
+    width: calc(100% - 40px);
+    margin: 0 auto 45px;
+}
+
+.inicio .inicio-introduccion {
+    max-width: 900px;
+    margin: 40px auto 45px;
+    text-align: center;
+}
+
+.inicio .inicio-introduccion h2,
+.inicio .inicio-bloque > h2 {
+    color: white;
+    font-size: 30px;
+    margin: 0 0 18px;
+    text-align: center;
+}
+
+.inicio .inicio-introduccion p {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.65;
+}
+
+.inicio .inicio-bloque {
+    margin: 45px 0;
+}
+
+.inicio .inicio-descripcion {
+    text-align: center;
+    max-width: 800px;
+    margin: -4px auto 24px;
+    line-height: 1.5;
+}
+
+/* Mostrar las tres categorías de Inicio */
+
+.inicio .inicio-categorias {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.inicio .inicio-categoria {
+    display: block;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid rgb(100, 123, 148);
+    background-color: rgb(48, 66, 87);
+    color: white;
+    text-decoration: none;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.inicio .inicio-categoria:hover {
+    transform: translateY(-4px);
+    border-color: rgb(138, 199, 255);
+}
+
+.inicio .inicio-categoria:focus-visible,
+.inicio .inicio-novedad a:focus-visible {
+    outline: 2px solid rgb(138, 199, 255);
+    outline-offset: 3px;
+}
+
+.inicio .inicio-categoria img {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 215px;
+    object-fit: cover;
+}
+
+.inicio .inicio-categoria-texto {
+    padding: 20px;
+}
+
+.inicio .inicio-categoria h3 {
+    color: rgb(138, 199, 255);
+    margin: 0 0 10px;
+    font-size: 25px;
+}
+
+.inicio .inicio-categoria p {
+    font-size: 17px;
+    line-height: 1.5;
+    margin: 0 0 18px;
+}
+
+.inicio .inicio-enlace {
+    color: rgb(138, 199, 255);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Mostrar el expediente destacado */
+
+.inicio .inicio-destacado {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    overflow: hidden;
+    background-color: rgb(89, 107, 128);
+    border: 1px solid rgb(48, 66, 87);
+    border-radius: 12px;
+}
+
+.inicio .inicio-destacado > img {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
+}
+
+.inicio .inicio-destacado-texto {
+    padding: 35px;
+    align-self: center;
+}
+
+.inicio .inicio-categoria-pequena {
+    color: rgb(182, 218, 255);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.inicio .inicio-destacado h3 {
+    color: white;
+    font-size: 27px;
+    margin: 12px 0;
+}
+
+.inicio .inicio-destacado-texto > p:not(.inicio-categoria-pequena) {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Mostrar las investigaciones recientes */
+
+.inicio .inicio-novedades {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.inicio .inicio-novedad {
+    overflow: hidden;
+    border: 1px solid rgb(100, 123, 148);
+    border-radius: 12px;
+    background-color: rgb(48, 66, 87);
+}
+
+.inicio .inicio-novedad > img {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 190px;
+    object-fit: cover;
+}
+
+.inicio .inicio-novedad-texto {
+    padding: 20px;
+}
+
+.inicio .inicio-novedad h3 {
+    font-size: 21px;
+    color: white;
+    margin: 9px 0;
+}
+
+.inicio .inicio-novedad-texto > p:not(.inicio-categoria-pequena) {
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+.inicio .inicio-novedad a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.inicio .inicio-novedad a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* Adaptar Inicio a tabletas */
+
+@media (max-width: 900px) {
+    .inicio .inicio-categorias,
+    .inicio .inicio-novedades {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .inicio .inicio-destacado {
+        grid-template-columns: 1fr;
+    }
+
+    .inicio .inicio-destacado > img {
+        height: 290px;
+        min-height: 0;
+    }
+}
+
+/* Adaptar Inicio a móviles */
+
+@media (max-width: 768px) {
+    .inicio .inicio-introduccion h2,
+    .inicio .inicio-bloque > h2 {
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 600px) {
+    .inicio {
+        width: calc(100% - 20px);
+    }
+
+    .inicio .inicio-categorias,
+    .inicio .inicio-novedades {
+        grid-template-columns: 1fr;
+    }
+
+    .inicio .inicio-categoria img,
+    .inicio .inicio-novedad > img {
+        height: 205px;
+    }
+
+    .inicio .inicio-destacado-texto {
+        padding: 22px;
+    }
 }
